@@ -2,6 +2,8 @@ import { GeocalizationApi } from "../__commons/axios/geocalization";
 
 export class SearchDistanceAdressesService {
   async GetListAddress(adressesInput) {
+		const adresses = []
+
 		try {
 
 			let adressesAndGeocalization = []
@@ -17,11 +19,20 @@ export class SearchDistanceAdressesService {
 			})
 
 
-			return adressesAndGeocalization
+			for(let i = 0; i < adressesAndGeocalization.length; i++) {
+				for(let j = i; j < adressesAndGeocalization.length - 1; j++) {
 
+					adresses.push({
+						from: adressesAndGeocalization[i],
+						to: adressesAndGeocalization[j + 1]
+					})
+				}
+			}
+
+			return adresses
 
 		} catch (error) {
 			throw error
 		}
-  }
+	}
 }
