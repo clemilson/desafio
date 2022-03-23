@@ -8,6 +8,4 @@ COPY . .
 
 RUN npm install
 
-USER node
-
 CMD npm run start
