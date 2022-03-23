@@ -7,7 +7,7 @@ export class SearchDistanceAdressesControllers {
 
 			const service = new SearchDistanceAdressesService()
 
-			const list = await service.GetListAddress(req.query)
+			const list = await service.GetListAddress(req.query.adresses as string)
 
 			return res.json(list);
 
