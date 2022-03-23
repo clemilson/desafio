@@ -18,7 +18,8 @@
   },
   "homepage": "https://gitlab.com/clemilson/desafio#readme",
   "dependencies": {
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
