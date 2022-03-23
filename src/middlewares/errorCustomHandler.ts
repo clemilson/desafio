@@ -1,6 +1,4 @@
-import { ErrorRequestHandler } from 'express'
-
-export const handler : ErrorRequestHandler = (err, req, res, next) => {
+export const errorCustomHandler = (err, req, res, next) => {
 	if(err.status) {
 		res.status(err.status).json({ msg: err.message })
 	} else {

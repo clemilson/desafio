@@ -1,13 +1,21 @@
 import { GeocalizationApi } from "../__commons/axios/geocalization";
 import { curvatureKilometerEarthDegree } from "../__commons/helpers/constants";
+import { dataAdresses } from "../__commons/protocols/dataAdresses";
+
 export class SearchDistanceAdressesService {
-  async GetListAddress(adressesInput: string) {
-		const dataAdressesReturn = {
-			closer: {},
-			away: {},
+  async distanceAdresses(adressesInput: string) {
+		const dataAdresses: dataAdresses = {
 			adresses: []
 		}
+
 		let adressesAndGeocalization = []
+
+		if(adressesInput.split(';').length < 3) {
+			throw {
+				status: 400,
+				message: 'É necessário ter no minímo 3 endereços'
+			}
+		}
 
 		try {
 			const listGeocalizationAdresses = await GeocalizationApi.searchDataAdresses(adressesInput)
@@ -33,7 +41,7 @@ export class SearchDistanceAdressesService {
 
 					const distanceKm = parseFloat((rootSquare * curvatureKilometerEarthDegree).toFixed(2))
 
-					dataAdressesReturn.adresses.push({
+					dataAdresses.adresses.push({
 						from: adressesAndGeocalization[i].address,
 						to: adressesAndGeocalization[j + 1].address,
 						distanceKm: distanceKm
@@ -41,22 +49,25 @@ export class SearchDistanceAdressesService {
 				}
 			}
 
+			dataAdresses.closer = this.addressCloser(dataAdresses)
+		  dataAdresses.away = this.addressAway(dataAdresses)
 
-			const away = dataAdressesReturn.adresses.reduce((prevAddress, currentAddress)=> {
-				return (prevAddress.distanceKm > currentAddress.distanceKm) ? prevAddress : currentAddress
-		  })
-
-			const closer = dataAdressesReturn.adresses.reduce((prev, current)=> {
-				return (prev.distanceKm < current.distanceKm) ? prev : current
-		  })
-
-			dataAdressesReturn.closer = closer
-		  dataAdressesReturn.away = away
-
-			return dataAdressesReturn
+			return dataAdresses
 
 		} catch (error) {
 			throw error
 		}
+	}
+
+	addressCloser(dataAdresses: dataAdresses) {
+		return dataAdresses.adresses.reduce((prevAddress, currentAddress)=> {
+			return (prevAddress.distanceKm < currentAddress.distanceKm) ? prevAddress : currentAddress
+		})
+	}
+
+	addressAway(dataAdressesReturn: dataAdresses) {
+		return dataAdressesReturn.adresses.reduce((prevAddress, currentAddress)=> {
+			return (prevAddress.distanceKm > currentAddress.distanceKm) ? prevAddress : currentAddress
+		})
 	}
 }

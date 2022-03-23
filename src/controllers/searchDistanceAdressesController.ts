@@ -4,12 +4,9 @@ import { SearchDistanceAdressesService } from "../services/searchDistanceAdresse
 export class SearchDistanceAdressesControllers {
   async handle(req: Request, res: Response, next: NextFunction) {
 		try {
-
 			const service = new SearchDistanceAdressesService()
-
-			const list = await service.GetListAddress(req.query.adresses as string)
-
-			return res.json(list);
+			const distanceAdresses = await service.distanceAdresses(req.query.adresses as string)
+			return res.json(distanceAdresses);
 
 		} catch (error) {
 			next(error)
