@@ -1,16 +1,26 @@
-import { GeocalizationApi } from "../__commons/axios/geocalization"
+import { GeocalizationApi } from "../__commons/axios/geocalization";
 
-export class SearchService {
-  async GetListAddress(listAdressesInput) {
+export class SearchDistanceAdressesService {
+  async GetListAddress(adressesInput) {
 		try {
 
-			const listGeocalization = await GeocalizationApi.searchGeocalization(listAdressesInput.adresses)
+			let adressesAndGeocalization = []
 
-			return listGeocalization.data.results
+			const listGeocalizationAdresses = await GeocalizationApi.searchDataAdresses(adressesInput.adresses)
+
+			listGeocalizationAdresses.data.results.map((addressGeolocation) => {
+				const dataAddressAndGeolocation = {
+					address: addressGeolocation.formatted_address,
+					coordinates: addressGeolocation.geometry.location
+				}
+				adressesAndGeocalization.push(dataAddressAndGeolocation)
+			})
+
+
+			return adressesAndGeocalization
 
 
 		} catch (error) {
-
 			throw error
 		}
   }
